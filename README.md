@@ -1,0 +1,583 @@
+
+    </script>
+    
+    <style>
+        body {
+            background-color: #0B132B;
+            color: #F3F4F6;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(28, 37, 65, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glow-dark-blue {
+            box-shadow: 0 0 20px rgba(11, 74, 143, 0.4);
+        }
+        .glow-sky-blue {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+        }
+        .glow-amber {
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+        }
+        .glow-rose {
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.35);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B132B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A385B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38BDF8;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col justify-between">
+
+    <div class="max-w-7xl mx-auto w-full space-y-6">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 glass-panel p-6 rounded-2xl">
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-blue-600/20 text-sky-400 rounded-xl border border-sky-500/30">
+                        <i class="fa-solid fa-network-wired text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white">Monitoreo de Puntos & Órdenes de Compra</h1>
+                        <p class="text-xs md:text-sm text-gray-400 mt-0.5" id="headerSubtitle">Estado de Instalaciones, Tecnología y Viabilidad Técnica por Localidad</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Filtro por Estado -->
+                <div class="flex bg-gray-900/80 p-1 rounded-lg border border-gray-700/80">
+                    <button id="btnFilterAll" onclick="setFilter('all')" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white transition-all">
+                        Todos (25)
+                    </button>
+                    <button id="btnFilterInstalada" onclick="setFilter('Instalada')" class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
+                        Instaladas
+                    </button>
+                    <button id="btnFilterEnCurso" onclick="setFilter('En curso')" class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
+                        En Curso
+                    </button>
+                    <button id="btnFilterQuiebre" onclick="setFilter('Quiebre')" class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all">
+                        Quiebre Técnico
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- KPI 1: Total Puntos -->
+            <div class="glass-panel p-5 rounded-xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Puntos</p>
+                    <h3 class="text-2xl font-black text-white mt-1" id="kpiTotal">25</h3>
+                    <p class="text-xs text-sky-400 mt-1"><i class="fa-solid fa-list-check"></i> Registro general</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-900/40 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl glow-dark-blue">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+            </div>
+
+            <!-- KPI 2: Instaladas -->
+            <div class="glass-panel p-5 rounded-xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Instaladas</p>
+                    <h3 class="text-2xl font-black text-white mt-1" id="kpiInstaladas">11</h3>
+                    <p class="text-xs text-emerald-400 mt-1"><i class="fa-solid fa-circle-check"></i> 44.0% del total</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 text-xl glow-emerald">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+            </div>
+
+            <!-- KPI 3: En Curso -->
+            <div class="glass-panel p-5 rounded-xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-sky-400 uppercase tracking-wider">En Curso</p>
+                    <h3 class="text-2xl font-black text-white mt-1" id="kpiEnCurso">10</h3>
+                    <p class="text-xs text-sky-400 mt-1"><i class="fa-solid fa-spinner fa-spin"></i> 40.0% en despliegue</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-300 text-xl glow-sky-blue">
+                    <i class="fa-solid fa-gears"></i>
+                </div>
+            </div>
+
+            <!-- KPI 4: Cambio de OC -->
+            <div class="glass-panel p-5 rounded-xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-amber-400 uppercase tracking-wider">Cambio de OC</p>
+                    <h3 class="text-2xl font-black text-white mt-1" id="kpiCambioOC">1</h3>
+                    <p class="text-xs text-amber-400 mt-1"><i class="fa-solid fa-triangle-exclamation"></i> Requerimiento adm.</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 text-xl glow-amber">
+                    <i class="fa-solid fa-file-pen"></i>
+                </div>
+            </div>
+
+            <!-- KPI 5: Quiebre Técnico -->
+            <div class="glass-panel p-5 rounded-xl flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-rose-400 uppercase tracking-wider">Quiebre Técnico</p>
+                    <h3 class="text-2xl font-black text-white mt-1" id="kpiQuiebre">3</h3>
+                    <p class="text-xs text-rose-400 mt-1"><i class="fa-solid fa-ban"></i> 12.0% No viable</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-300 text-xl glow-rose">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chart Section -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Chart 1: Distribución por Estado -->
+            <div class="glass-panel p-6 rounded-2xl relative flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-1">
+                        <i class="fa-solid fa-chart-pie text-sky-400"></i> Distribución por Estado
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-4">Proporción de puntos según etapa técnica</p>
+                </div>
+                <div class="relative w-full h-[280px] flex items-center justify-center">
+                    <canvas id="estadoPieChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Puntos por Localidad y Tecnología -->
+            <div class="glass-panel p-6 rounded-2xl relative lg:col-span-2">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-gray-800 gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-column text-sky-400"></i> Puntos por Localidad & Tecnología
+                        </h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Distribución entre FTTO y METRO en cada localidad</p>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs font-semibold">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-[#38BDF8]"></span>
+                            <span class="text-gray-300">FTTO (11)</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-[#0B4A8F]"></span>
+                            <span class="text-gray-300">METRO (14)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative w-full h-[280px]">
+                    <canvas id="localidadesBarChart"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <!-- Detailed Data Table -->
+        <section class="glass-panel p-6 rounded-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-table text-sky-400"></i> Tabla Detallada de Puntos e Instalaciones
+                </h3>
+                
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Buscador -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Buscar ID, OC, dirección..." class="bg-gray-900/80 border border-gray-700 text-xs text-white pl-8 pr-3 py-2 rounded-lg focus:outline-none focus:border-sky-500 w-48 sm:w-64">
+                    </div>
+
+                    <!-- Filtro Localidad -->
+                    <select id="localidadSelect" onchange="applyFilters()" class="bg-gray-900/80 border border-gray-700 text-xs text-white px-3 py-2 rounded-lg focus:outline-none focus:border-sky-500">
+                        <option value="all">Todas las Localidades</option>
+                        <option value="KENNEDY">Kennedy</option>
+                        <option value="PUENTE ARANDA">Puente Aranda</option>
+                        <option value="SAN CRISTOBAL">San Cristóbal</option>
+                        <option value="ENGATIVA">Engativá</option>
+                        <option value="BOSA">Bosa</option>
+                        <option value="SANTA FE">Santa Fe</option>
+                        <option value="SUBA">Suba</option>
+                        <option value="USME">Usme</option>
+                    </select>
+
+                    <!-- Exportar CSV -->
+                    <button onclick="exportToCSV()" class="text-xs bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-medium px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-download"></i> Exportar CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-gray-800">
+                <table class="w-full text-left text-xs text-gray-300">
+                    <thead class="bg-gray-800/80 uppercase text-[11px] text-gray-400 border-b border-gray-700 sticky top-0 backdrop-blur-md">
+                        <tr>
+                            <th class="py-3 px-3 font-semibold text-white">ID Punto</th>
+                            <th class="py-3 px-3 font-semibold text-white">OC</th>
+                            <th class="py-3 px-3 font-semibold text-white">Dirección</th>
+                            <th class="py-3 px-3 font-semibold text-white">Dirección / Localización</th>
+                            <th class="py-3 px-3 font-semibold text-white">Estado</th>
+                            <th class="py-3 px-3 font-semibold text-white whitespace-nowrap">Fecha Instalación</th>
+                            <th class="py-3 px-3 font-semibold text-white">Observación</th>
+                            <th class="py-3 px-3 font-semibold text-white">Tecnología</th>
+                            <th class="py-3 px-3 font-semibold text-white">Localidad</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800/60 font-medium" id="tableBody">
+                        <!-- Dynamic JavaScript Population -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="flex items-center justify-between text-xs text-gray-400 pt-2">
+                <span id="showingCount">Mostrando 25 de 25 registros</span>
+                <span class="text-gray-500">Corte al 31 de Agosto de 2026</span>
+            </div>
+        </section>
+
+        <!-- Cards de Metadata -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Fuente -->
+            <div class="glass-panel p-5 rounded-xl">
+                <div class="flex items-center gap-2.5 text-sky-400 text-sm font-semibold mb-2">
+                    <i class="fa-solid fa-database"></i> Fuente
+                </div>
+                <p class="text-xl font-bold text-white">Remedy Incidentes & Despliegue Red</p>
+            </div>
+
+            <!-- Corte -->
+            <div class="glass-panel p-5 rounded-xl">
+                <div class="flex items-center gap-2.5 text-sky-400 text-sm font-semibold mb-2">
+                    <i class="fa-solid fa-calendar-check"></i> Fecha de Corte
+                </div>
+                <p class="text-xl font-bold text-white">31 ago 2026</p>
+            </div>
+
+            <!-- Consideraciones -->
+            <div class="glass-panel p-5 rounded-xl">
+                <div class="flex items-center gap-2.5 text-sky-400 text-sm font-semibold mb-2">
+                    <i class="fa-solid fa-clipboard-list"></i> Consideraciones
+                </div>
+                <p class="text-xs text-gray-300 leading-relaxed">
+                    Se registran 11 puntos totalmente instalados y 10 en proceso de despliegue. Tres puntos presentan quiebre técnico por viabilidad negativa en Metro, FTTO y LTE.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="max-w-7xl mx-auto w-full text-center text-xs text-gray-500 py-6">
+        Sistema de Gestión de Red &bull; Monitoreo Integrado de Instalaciones y Viabilidad
+    </footer>
+
+    <script>
+        // Exact Data Array Transcribed from Image
+        const rawPointsData = [
+            { id: 93, oc: "OC-2306639", dir: "CL 5A KR 43B", loc: "Carrera 43 Calle 5 A", estado: "Instalada", fecha: "21/08/2026", obs: "Instalada", tech: "FTTO", localidad: "PUENTE ARANDA" },
+            { id: 406, oc: "OC-2330972", dir: "AV BOYACA CL 55", loc: "AV BOYACA CL 55, Se reubica sobre la misma dirección esquina noroccidental", estado: "Instalado", fecha: "21/08/2026", obs: "Instalada", tech: "FTTO", localidad: "ENGATIVA" },
+            { id: 153, oc: "OC-2324639", dir: "KR 13 B CL 72 SUR", loc: "CRA 13 N.° 45B-72 SUR", estado: "Instalada", fecha: "24/08/2026", obs: "Instalada", tech: "FTTO", localidad: "SAN CRISTOBAL" },
+            { id: 328, oc: "OC-2307472", dir: "CL 37B SUR KR 68D", loc: "Se mueve para la TV 68F CL 37B SUR esquina noroccidental", estado: "Instalada", fecha: "22/08/2026", obs: "Instalada", tech: "FTTO", localidad: "KENNEDY" },
+            { id: 410, oc: "OC-2316011", dir: "KR 69I CL 68", loc: "KR 69I CL 68", estado: "Instalada", fecha: "22/08/2026", obs: "Instalada", tech: "FTTO", localidad: "ENGATIVA" },
+            { id: 309, oc: "OC-2306324", dir: "CL 34A SUR KR 85", loc: "CL 34A Sur con TV 83B", estado: "Instalada", fecha: "24/08/2026", obs: "Instalada", tech: "METRO", localidad: "KENNEDY" },
+            { id: 134, oc: "OC-2315297", dir: "CL 1B KR 13A", loc: "CLL1B # 13A", estado: "Instalado", fecha: "10/07/2026", obs: "Instalada pero con robo de acometida eléctrica sin energía", tech: "FTTO", localidad: "SANTA FE" },
+            { id: 98, oc: "OC-2331661", dir: "AK 36 CL 1F", loc: "Calle 1F AV Carrera 36, Misma dirección, esquina suroccidental", estado: "Instalado", fecha: "25/08/2026", obs: "Instalada", tech: "FTTO", localidad: "PUENTE ARANDA" },
+            { id: 313, oc: "OC-2306568", dir: "KR 82B CL 41", loc: "KR 82B con CL 41 Sur", estado: "Instalado", fecha: "25/08/2026", obs: "Instalada", tech: "METRO", localidad: "KENNEDY" },
+            { id: 95, oc: "OC-2306636", dir: "KR 54 CL 5A", loc: "Calle 5A # Carrera 54 A", estado: "Instalado", fecha: "25/08/2026", obs: "Instalada", tech: "FTTO", localidad: "PUENTE ARANDA" },
+            { id: 275, oc: "OC-2272858", dir: "CL 69 SUR KR 86C", loc: "CL 69 Sur con KR 86C", estado: "Instalado", fecha: "26/08/2026", obs: "Instalada", tech: "FTTO", localidad: "BOSA" },
+            { id: 97, oc: "OC-2331668", dir: "KR 41A CL 6", loc: "AC 6 KR 41A, esquina sur occidental", estado: "En curso", fecha: "31/08/2026", obs: "Instalada", tech: "FTTO", localidad: "PUENTE ARANDA" },
+            { id: 424, oc: "OC-2331667", dir: "KR 80 CL 66A", loc: "CL 66A KR 80, Sobre separador de la calle 66a al costado oriental", estado: "En curso", fecha: "29/08/2026", obs: "Instalada", tech: "FTTO", localidad: "ENGATIVA" },
+            { id: 161, oc: "OC-2329187", dir: "CL 22A SUR KR 3", loc: "CALLE 22A SUR No 3-34", estado: "En curso", fecha: "1/09/2026", obs: "En curso de instalación", tech: "METRO", localidad: "SAN CRISTOBAL" },
+            { id: 156, oc: "OC-2329185", dir: "KR 13A ESTE CL 60D ESTE", loc: "CRA 13A ESTE CALLE 60D ESTE", estado: "En curso", fecha: "2/09/2026", obs: "En curso de instalación", tech: "METRO", localidad: "SAN CRISTOBAL" },
+            { id: 158, oc: "OC-2329186", dir: "CL 37 SUR KR 3A ESTE", loc: "CALLE 37 SUR No 3-70E", estado: "En curso", fecha: "1/09/2026", obs: "En curso de instalación", tech: "METRO", localidad: "SAN CRISTOBAL" },
+            { id: 294, oc: "OC-2329189", dir: "KR 81H CL 46 SUR", loc: "KR 81H con CL 46 Sur", estado: "En curso", fecha: "3/09/2026", obs: "En curso de instalación", tech: "METRO", localidad: "KENNEDY" },
+            { id: 182, oc: "OC-2306743", dir: "DG 57A SUR TV 3B", loc: "Diagonal 56 sur transversal 1 este", estado: "En curso", fecha: "2/09/2026", obs: "En curso de instalación", tech: "METRO", localidad: "USME" },
+            { id: 288, oc: "OC-2272865", dir: "KR 90A CL 40 SUR", loc: "KR 90A con CL 40 Sur", estado: "En curso", fecha: "4/09/2026", obs: "En curso de instalación", tech: "METRO", localidad: "KENNEDY" },
+            { id: 292, oc: "OC-2272867", dir: "CL 34B SUR KR 91C", loc: "CL 34A Sur con KR 91C", estado: "En curso", fecha: "Por definir", obs: "Validación de hilos", tech: "METRO", localidad: "KENNEDY" },
+            { id: 352, oc: "OC-2308172", dir: "KR 82A CL 6B", loc: "KR 82A con CL 6B", estado: "En curso - en daño", fecha: "Por definir", obs: "Ruptura de cableado por obra del IDU, ASG trabaja en recuperar la fibra", tech: "METRO", localidad: "KENNEDY" },
+            { id: 304, oc: "Cambio de OC", dir: "AK 89 CL 40 SUR", loc: "AK 89 con CL 40 Sur", estado: "Cambio de OC", fecha: "Sin fecha", obs: "En cambio de OC", tech: "METRO", localidad: "KENNEDY" },
+            { id: 310, oc: "OC-2310944", dir: "KR 81 CL 5A SUR", loc: "KR 81 con CL 5A Sur", estado: "Quiebre técnico", fecha: "NA", obs: "Después de replanteo viabilidad negativa: no es viable Metro, FTTO y tampoco LTE", tech: "METRO", localidad: "KENNEDY" },
+            { id: 493, oc: "OC-2306544", dir: "CL 142C BIS KR 138A", loc: "CL 142C BIS KR 138A", estado: "Quiebre técnico", fecha: "NA", obs: "Después de replanteo viabilidad negativa: no es viable Metro, FTTO y tampoco LTE", tech: "METRO", localidad: "SUBA" },
+            { id: 311, oc: "OC-2305474", dir: "KR 82 CL 1A", loc: "KR 82 con CL 1A", estado: "Quiebre técnico", fecha: "NA", obs: "Después de replanteo viabilidad negativa: no es viable Metro, FTTO y tampoco LTE", tech: "METRO", localidad: "KENNEDY" }
+        ];
+
+        let currentFilterStatus = 'all';
+        let pieChartInstance = null;
+        let barChartInstance = null;
+
+        function setFilter(status) {
+            currentFilterStatus = status;
+            
+            // Toggle active button style
+            document.getElementById('btnFilterAll').className = status === 'all' ? "px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white transition-all" : "px-3 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all";
+            document.getElementById('btnFilterInstalada').className = status === 'Instalada' ? "px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white transition-all" : "px-3 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all";
+            document.getElementById('btnFilterEnCurso').className = status === 'En curso' ? "px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white transition-all" : "px-3 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all";
+            document.getElementById('btnFilterQuiebre').className = status === 'Quiebre' ? "px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white transition-all" : "px-3 py-1.5 text-xs font-semibold rounded-md text-gray-400 hover:text-white transition-all";
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const localityVal = document.getElementById('localidadSelect').value;
+
+            const filtered = rawPointsData.filter(item => {
+                // Filter status
+                let matchStatus = true;
+                if (currentFilterStatus === 'Instalada') {
+                    matchStatus = item.estado.startsWith('Instalad');
+                } else if (currentFilterStatus === 'En curso') {
+                    matchStatus = item.estado.startsWith('En curso');
+                } else if (currentFilterStatus === 'Quiebre') {
+                    matchStatus = item.estado === 'Quiebre técnico';
+                }
+
+                // Filter locality
+                let matchLocality = true;
+                if (localityVal !== 'all') {
+                    matchLocality = item.localidad === localityVal;
+                }
+
+                // Search filter
+                let matchSearch = true;
+                if (searchVal) {
+                    const text = `${item.id} ${item.oc} ${item.dir} ${item.loc} ${item.estado} ${item.obs} ${item.tech} ${item.localidad}`.toLowerCase();
+                    matchSearch = text.includes(searchVal);
+                }
+
+                return matchStatus && matchLocality && matchSearch;
+            });
+
+            populateTable(filtered);
+            updateKPIs(filtered);
+        }
+
+        function updateKPIs(filteredData) {
+            const total = filteredData.length;
+            const instaladas = filteredData.filter(d => d.estado.startsWith('Instalad')).length;
+            const enCurso = filteredData.filter(d => d.estado.startsWith('En curso')).length;
+            const cambioOC = filteredData.filter(d => d.estado === 'Cambio de OC').length;
+            const quiebre = filteredData.filter(d => d.estado === 'Quiebre técnico').length;
+
+            document.getElementById('kpiTotal').innerText = total;
+            document.getElementById('kpiInstaladas').innerText = instaladas;
+            document.getElementById('kpiEnCurso').innerText = enCurso;
+            document.getElementById('kpiCambioOC').innerText = cambioOC;
+            document.getElementById('kpiQuiebre').innerText = quiebre;
+
+            document.getElementById('showingCount').innerText = `Mostrando ${total} de ${rawPointsData.length} registros`;
+        }
+
+        function getStatusBadge(estado) {
+            if (estado.startsWith('Instalad')) {
+                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"><i class="fa-solid fa-circle-check text-[10px]"></i> ${estado}</span>`;
+            } else if (estado.startsWith('En curso')) {
+                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-sky-500/15 text-sky-300 border border-sky-500/30"><i class="fa-solid fa-spinner fa-spin text-[10px]"></i> ${estado}</span>`;
+            } else if (estado === 'Cambio de OC') {
+                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30"><i class="fa-solid fa-file-pen text-[10px]"></i> ${estado}</span>`;
+            } else if (estado === 'Quiebre técnico') {
+                return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30"><i class="fa-solid fa-circle-xmark text-[10px]"></i> ${estado}</span>`;
+            }
+            return `<span class="px-2 py-1 rounded text-xs bg-gray-800 text-gray-300">${estado}</span>`;
+        }
+
+        function getTechBadge(tech) {
+            if (tech === 'FTTO') {
+                return `<span class="px-2 py-0.5 rounded font-mono font-bold bg-sky-500/20 text-sky-400 border border-sky-400/30 text-[10px]">FTTO</span>`;
+            }
+            return `<span class="px-2 py-0.5 rounded font-mono font-bold bg-blue-900/40 text-blue-300 border border-blue-500/30 text-[10px]">METRO</span>`;
+        }
+
+        function getRowBackgroundClass(estado) {
+            if (estado.startsWith('Instalad')) return "hover:bg-emerald-950/20 bg-emerald-950/10 transition-colors";
+            if (estado.startsWith('En curso')) return "hover:bg-sky-950/20 bg-sky-950/10 transition-colors";
+            if (estado === 'Cambio de OC') return "hover:bg-amber-950/20 bg-amber-950/10 transition-colors";
+            if (estado === 'Quiebre técnico') return "hover:bg-rose-950/20 bg-rose-950/10 transition-colors";
+            return "hover:bg-gray-800/40 transition-colors";
+        }
+
+        function populateTable(data) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            data.forEach((row) => {
+                const tr = document.createElement('tr');
+                tr.className = getRowBackgroundClass(row.estado);
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-mono font-bold text-white">${row.id}</td>
+                    <td class="py-3 px-3 font-mono text-gray-300 whitespace-nowrap">${row.oc}</td>
+                    <td class="py-3 px-3 font-semibold text-gray-200">${row.dir}</td>
+                    <td class="py-3 px-3 text-gray-400 max-w-xs truncate" title="${row.loc}">${row.loc}</td>
+                    <td class="py-3 px-3 whitespace-nowrap">${getStatusBadge(row.estado)}</td>
+                    <td class="py-3 px-3 font-mono text-gray-300 whitespace-nowrap">${row.fecha}</td>
+                    <td class="py-3 px-3 text-gray-300 max-w-sm" title="${row.obs}">${row.obs}</td>
+                    <td class="py-3 px-3 whitespace-nowrap">${getTechBadge(row.tech)}</td>
+                    <td class="py-3 px-3 font-semibold text-gray-300 whitespace-nowrap">${row.localidad}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function initCharts() {
+            Chart.register(ChartDataLabels);
+
+            // Chart 1: Donut Chart por Estado
+            const pieCtx = document.getElementById('estadoPieChart').getContext('2d');
+            
+            const instaladasCount = rawPointsData.filter(d => d.estado.startsWith('Instalad')).length;
+            const enCursoCount = rawPointsData.filter(d => d.estado.startsWith('En curso')).length;
+            const cambioOCCount = rawPointsData.filter(d => d.estado === 'Cambio de OC').length;
+            const quiebreCount = rawPointsData.filter(d => d.estado === 'Quiebre técnico').length;
+
+            pieChartInstance = new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Instaladas', 'En Curso', 'Cambio de OC', 'Quiebre Técnico'],
+                    datasets: [{
+                        data: [instaladasCount, enCursoCount, cambioOCCount, quiebreCount],
+                        backgroundColor: ['#10B981', '#38BDF8', '#F59E0B', '#F43F5E'],
+                        borderColor: '#1C2541',
+                        borderWidth: 3,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#D1D5DB',
+                                font: { family: 'Inter', size: 11, weight: '600' },
+                                padding: 12,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(11, 19, 43, 0.95)',
+                            titleFont: { family: 'Inter', size: 13, weight: 'bold' },
+                            bodyFont: { family: 'Inter', size: 12 },
+                            padding: 10,
+                            borderColor: 'rgba(255, 255, 255, 0.15)',
+                            borderWidth: 1
+                        },
+                        datalabels: {
+                            color: '#FFFFFF',
+                            font: { weight: 'bold', size: 12, family: 'Inter' },
+                            formatter: (value, ctx) => {
+                                const sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value * 100) / sum).toFixed(0) + "%";
+                                return value > 0 ? `${value}` : '';
+                            }
+                        }
+                    },
+                    cutout: '62%'
+                }
+            });
+
+            // Chart 2: Stacked Bar por Localidad y Tecnología
+            const barCtx = document.getElementById('localidadesBarChart').getContext('2d');
+
+            // Map localities
+            const localitiesMap = {};
+            rawPointsData.forEach(item => {
+                if (!localitiesMap[item.localidad]) {
+                    localitiesMap[item.localidad] = { FTTO: 0, METRO: 0 };
+                }
+                localitiesMap[item.localidad][item.tech]++;
+            });
+
+            const labels = Object.keys(localitiesMap);
+            const fttoData = labels.map(loc => localitiesMap[loc].FTTO);
+            const metroData = labels.map(loc => localitiesMap[loc].METRO);
+
+            barChartInstance = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'FTTO',
+                            data: fttoData,
+                            backgroundColor: '#38BDF8',
+                            borderRadius: 4,
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'METRO',
+                            data: metroData,
+                            backgroundColor: '#0B4A8F',
+                            borderRadius: 4,
+                            stack: 'Stack 0'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#9CA3AF', font: { family: 'Inter', size: 10, weight: '600' } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                            ticks: { color: '#9CA3AF', stepSize: 1, font: { family: 'Inter', size: 11 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(11, 19, 43, 0.95)',
+                            borderColor: 'rgba(255, 255, 255, 0.15)',
+                            borderWidth: 1,
+                            padding: 10
+                        },
+                        datalabels: {
+                            color: '#FFFFFF',
+                            font: { weight: 'bold', size: 10, family: 'Inter' },
+                            formatter: (val) => val > 0 ? val : ''
+                        }
+                    }
+                }
+            });
+        }
+
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,ID Punto,OC,Direccion,Localizacion,Estado,Fecha Instalacion,Observacion,Tecnologia,Localidad\n";
+            rawPointsData.forEach(row => {
+                const escapedObs = `"${row.obs.replace(/"/g, '""')}"`;
+                const escapedLoc = `"${row.loc.replace(/"/g, '""')}"`;
+                csvContent += `${row.id},${row.oc},${row.dir},${escapedLoc},${row.estado},${row.fecha},${escapedObs},${row.tech},${row.localidad}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "reporte_puntos_instalacion.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onload = function() {
+            populateTable(rawPointsData);
+            initCharts();
+        };
+    </script>
+</body>
+</html>
